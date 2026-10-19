@@ -1,11 +1,11 @@
-# HCP360 (Glasser) to Yeo-7 Network Mapping
+# Anatomical Atlases to Yeo-7 Network Mapping
 <div align="center">
 
 **English** | [简体中文](./README_zh-CN.md)
 
 </div>
 
-This project facilitates the mapping between the **HCP MMP 1.0 (Glasser 360)** atlas and the **Yeo 2011 (7 Networks)** functional parcellation. By resampling the atlases into a common space and calculating spatial overlap, this project assigns each of the 360 Glasser cortical regions to one of the 7 canonical Yeo functional networks.
+This project maps the **HCP MMP 1.0 (Glasser 360)** and **AAL116 (SPM12)** atlases to the **Yeo 2011 (7 Networks)** functional parcellation. The atlases are aligned in a common MNI space, and each anatomical region is assigned according to its voxel-wise overlap with the Yeo networks.
 
 <table>
   <tr>
@@ -55,7 +55,7 @@ This CSV contains the correspondence between Glasser ROI IDs ,Yeo network labels
 Follow these steps to reproduce the mapping process or generate the files from scratch.
 
 ### 0. Prerequisites
-Ensure your Python environment has the necessary libraries installed for neuroimaging data manipulation (e.g., `nibabel`, `numpy`, `pandas`).
+Install the dependencies with `pip install -r requirements.txt`.
 
 ### 1. Acquire Yeo Atlas
 Obtain the Yeo 2011 7-Network atlas in MNI152 space.
@@ -84,6 +84,22 @@ Calculate the overlap between the resampled HCP ROIs and the Yeo networks to gen
     python mapping_hcp2yeo.py
     ```
 
+### 5. Generate the AAL116 Mapping
+
+Fetch the SPM12 AAL116 atlas and its ordered labels:
+
+```bash
+python fetch_aal116.py
+```
+
+Map all 116 AAL regions to Yeo-7:
+
+```bash
+python mapping_aal116_to_yeo.py --aal-path aal116_data/AAL116_SPM12.nii.gz --aal-labels aal116_data/AAL116_SPM12_labels.csv
+```
+
+The script generates a CSV lookup table, an aligned AAL atlas, a mapped NIfTI image, and an H2GT-ready JSON module definition. AAL116 contains cortical, subcortical, and cerebellar regions, whereas Yeo-7 is a cortical parcellation. Regions with less than 25% Yeo coverage are therefore retained as network 0 (`NonCorticalOrUnassigned`) instead of being forced into a cortical network. The JSON uses zero-based AAL indices in the standard 116-by-116 connectivity-matrix order.
+
 ---
 
 ## 📚 References
@@ -95,3 +111,6 @@ If you use these atlases in your research, please cite the original publications
 
 2.  **Yeo 7 Networks:**
     > Yeo, B. T., Krienen, F. M., Sepulcre, J., Sabuncu, M. R., Lashkari, D., Hollinshead, M., ... & Buckner, R. L. (2011). The organization of the human cerebral cortex estimated by intrinsic functional connectivity. *Journal of neurophysiology*, 106(3), 1125-1165.
+
+3.  **AAL:**
+    > Tzourio-Mazoyer, N., Landeau, B., Papathanassiou, D., Crivello, F., Etard, O., Delcroix, N., Mazoyer, B., & Joliot, M. (2002). Automated anatomical labeling of activations in SPM using a macroscopic anatomical parcellation of the MNI MRI single-subject brain. *NeuroImage*, 15(1), 273-289.

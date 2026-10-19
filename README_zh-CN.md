@@ -1,4 +1,4 @@
-# HCP360 (Glasser) 到 Yeo-7 网络映射
+# 解剖图谱到 Yeo-7 网络映射
 
 <div align="center">
 
@@ -6,7 +6,7 @@
 
 </div>
 
-本项目旨在实现 **HCP MMP 1.0 (Glasser 360)** 图谱与 **Yeo 2011 (7 Networks)** 功能分区之间的映射。通过将图谱重采样至同一空间并计算空间重叠率，本项目将 Glasser 图谱中的 360 个皮层区域分配到了 7 个经典的 Yeo 功能子网络中。
+本项目将 **HCP MMP 1.0 (Glasser 360)** 和 **AAL116 (SPM12)** 图谱映射到 **Yeo 2011 (7 Networks)** 功能分区。项目将图谱对齐到相同的 MNI 空间，并根据体素重叠情况为每个解剖区域分配 Yeo 网络。
 
 <table>
   <tr>
@@ -55,7 +55,7 @@
 请按照以下步骤复现映射过程或从头生成文件。
 
 ### 0. 环境准备
-请确保您的 Python 环境中安装了处理神经影像数据的必要库（例如 `nibabel`, `numpy`, `pandas`）。
+运行 `pip install -r requirements.txt` 安装依赖。
 
 ### 1. 获取 Yeo 图谱
 获取 MNI152 空间下的 Yeo 2011 7网络图谱。
@@ -81,6 +81,22 @@
     python mapping_hcp2yeo.py
     ```
 
+### 5. 生成 AAL116 映射
+
+获取 SPM12 版本的 AAL116 图谱及其有序标签：
+
+```bash
+python fetch_aal116.py
+```
+
+将全部 116 个 AAL 区域映射到 Yeo-7：
+
+```bash
+python mapping_aal116_to_yeo.py --aal-path aal116_data/AAL116_SPM12.nii.gz --aal-labels aal116_data/AAL116_SPM12_labels.csv
+```
+
+脚本会生成 CSV 对照表、对齐后的 AAL 图谱、映射后的 NIfTI 图像，以及可直接用于 H2GT 的模块 JSON。AAL116 包含皮层、皮层下和小脑区域，而 Yeo-7 是皮层功能分区。因此，Yeo 覆盖率低于 25% 的区域保留为网络 0（`NonCorticalOrUnassigned`），不会被强制分配到某个皮层网络。JSON 中的节点编号采用从 0 开始的标准 AAL116 功能连接矩阵顺序。
+
 ---
 
 ## 📚 参考文献
@@ -92,3 +108,6 @@
 
 2.  **Yeo 7 Networks:**
     > Yeo, B. T., Krienen, F. M., Sepulcre, J., Sabuncu, M. R., Lashkari, D., Hollinshead, M., ... & Buckner, R. L. (2011). The organization of the human cerebral cortex estimated by intrinsic functional connectivity. *Journal of neurophysiology*, 106(3), 1125-1165.
+
+3.  **AAL:**
+    > Tzourio-Mazoyer, N., Landeau, B., Papathanassiou, D., Crivello, F., Etard, O., Delcroix, N., Mazoyer, B., & Joliot, M. (2002). Automated anatomical labeling of activations in SPM using a macroscopic anatomical parcellation of the MNI MRI single-subject brain. *NeuroImage*, 15(1), 273-289.
