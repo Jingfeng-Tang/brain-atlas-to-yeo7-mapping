@@ -1,4 +1,4 @@
-# 解剖图谱到 Yeo-7 网络映射
+# 脑图谱到 Yeo-7 网络映射
 
 <div align="center">
 
