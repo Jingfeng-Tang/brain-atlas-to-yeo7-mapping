@@ -1,4 +1,4 @@
-# Anatomical Atlases to Yeo-7 Network Mapping
+# Brain Atlas to Yeo-7 Network Mapping
 <div align="center">
 
 **English** | [简体中文](./README_zh-CN.md)
